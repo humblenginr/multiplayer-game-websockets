@@ -1,0 +1,85 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>CellMaster</title>
+  <meta name="description" content="The HTML5 Herald">
+  <meta name="author" content="SitePoint">
+
+
+</head>
+
+<body>
+    <h1>Welcome to MasterCell</h1>
+    <button id="createBtn">Create Game</button>
+    <br />
+    <input type="text" id="joinGameInput" />
+    <button id="joinGameBtn">Join game</button>
+    <div id="divPlayers"></div>
+    <div id="divBoard"></div>
+  <script >
+      let clientId = null;
+      let gameId = null;
+      let playerColor = null
+        let ws = new WebSocket("ws://localhost:8080")
+      const createBtn = document.getElementById("createBtn")
+      const divPlayers= document.getElementById("divPlayers")
+      const divBoard= document.getElementById("divBoard")
+      const joinBtn = document.getElementById("joinGameBtn")
+      const joinInput = document.getElementById("joinGameInput")
+      joinBtn.addEventListener("click", (e) => {
+     if(gameId === null ) gameId = joinInput.value
+        const payload = {
+        "method" : "join",
+        "clientId" : clientId,
+        "gameId": gameId,
+        }
+        ws.send(JSON.stringify(payload))
+      })
+      createBtn.addEventListener("click", (e) => {
+        const payload = {
+        "method" : "create",
+        "clientId" : clientId,
+        }
+        ws.send(JSON.stringify(payload))
+      })
+        ws.onmessage = message => {
+        const res = JSON.parse(message.data)
+        if(res.method === "connect") clientId = res.clientId
+        if(res.method === "create") {
+        gameId = res.game.id
+        console.log("Game created succesfully with id " + res.game.id + " with " + res.game.cells + " cells" )
+        }
+        if(res.method === "join") {
+        const game =res.game;
+        while(divPlayers.firstChild)
+            divPlayers.removeChild(divPlayers.firstChild)
+
+        game.clients.forEach(c => {
+        const d = document.createElement("div")
+        d.style.width = "200px"
+        d.style.background = c.color
+        d.textContent = c.clientId
+        divPlayers.appendChild(d)
+        if(c.clientId === clientId) playerColor = c.color 
+        })
+
+        while(divBoard.firstChild)
+            divBoard.removeChild(divBoard.firstChild)
+        }
+
+        for(let i =0; i< game.balls; i++){
+        cosnt b = document.createElement("button")
+        b.id = "ball" + i
+        b.tag = i+1
+        b.addEventListener("click" ,(e) => {
+        b.style.background = playerColor
+        })
+        divBoard.appendChild(b)
+        }
+        }
+  </script>
+</body>
+</html>

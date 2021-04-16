@@ -1,0 +1,27 @@
+{
+  "name": "multiplayer-game-websockets",
+  "version": "1.0.0",
+  "description": "A browser based multiplayer game built with web sockets",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sudo-NithishKarthik/multiplayer-game-websockets.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sudo-NithishKarthik/multiplayer-game-websockets/issues"
+  },
+  "homepage": "https://github.com/sudo-NithishKarthik/multiplayer-game-websockets#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "guid": "^0.0.12",
+    "uuid": "^8.3.2",
+    "websocket": "^1.0.34"
+  }
+}
