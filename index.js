@@ -46,18 +46,32 @@ wsServer.on("request", (req) => {
         clientId: clientId,
         color: color,
       });
-      if (game.clients.length >= 3) {
+      if (game.clients.length > 3) {
         //max players reacher
       }
+
+      if (game.clients.length === 3) updateGameState();
       const payload = {
         method: "join",
-        game,
+        game: game,
       };
       game.clients.forEach((client) => {
         clients[client.clientId].connection.send(JSON.stringify(payload));
       });
       const connection = clients[clientId].connection;
       connection.send(JSON.stringify(payload));
+    }
+
+    if (result.method === "play") {
+      const clientId = result.clientId;
+      const gameId = result.gameId;
+      const cellId = result.cellId;
+      const color = result.color;
+
+      let state = games[gameId].state;
+      if (!state) state = {};
+      state[cellId] = color;
+      games[gameId].state = state;
     }
   });
   const clientId = uuidv4();
@@ -70,3 +84,17 @@ wsServer.on("request", (req) => {
   };
   connection.send(JSON.stringify(payload));
 });
+
+function updateGameState() {
+  for (const g of Object.keys(games)) {
+    const payload = {
+      method: "update",
+      game: games[g],
+    };
+    console.log(payload);
+    games[g].clients.forEach((c) => {
+      clients[c.clientId].connection.send(JSON.stringify(payload));
+    });
+  }
+  setTimeout(updateGameState, 500);
+}
