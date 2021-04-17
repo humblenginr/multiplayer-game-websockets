@@ -5,4 +5,4 @@ This is an experiment using web sockets to build a simple multiplayer game that 
 This is not the efficient way of building a multiplayer game.
 This is game is based on **Authoritative server** architecture i.e The server takes care of updating the state of the game
 
-*Fully functional version of this will be deployed soon , i hope so 浪 *
+*Fully functional version of this will be deployed soon , i hope so 😅 *
